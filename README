@@ -1,0 +1,37 @@
+README
+======
+
+I did it as a part of homework problem in the Statistical Speech and Language Processing course by Prof Daniel Gildea (https://www.cs.rochester.edu/~gildea/) in Fall 2015. Here I implemented two different methods for etimating a power law equation.
+Details are available in the following paper:
+Power-law distributions in empirical data: https://arxiv.org/abs/0706.1062
+==========================================================================================================
+
+A quantity x is said to follow power law when p(X) is proportional to x^(-a). That is p(X=x) = c*x^(-a)
+This is defined for x > some xmin.
+In our case, x is the frequency of a word in a corpus. 
+
+Method 1: Least Square Regression
+---------------------------------
+We can estimate p(X=x) by computing the histogram of X. Then we can plot it on log-log scale and fit
+a line to measure the value of a. However, while creating the histogram, we need to specify how many
+bins should be there. This poses a problem as different choices of the bins result in different values
+of a. This is illustrated with Figure 1. I've shown three different plots of the (normalized) histogram.
+The estimated values of a if also shown in the plots. Notice how the estimated parameter changes with the
+size of the bins. Unfortunately, none of the estimations are correct as we can anticipate from the position
+of the least square line and the data.
+
+
+Method 2: Maximum Likelihood Estimation (MLE)
+---------------------------------------------
+As discussed in Section 3.1, Appendix A, and Appendix B in the paper (Power-law distributions in empirical data: https://arxiv.org/abs/0706.1062), MLE give us much better estimate of
+the model parameters. In Figure 2, I've used MLE to calculate the model parameter as follows:
+a = 1 + N*(sum(log(x/(xmin - 0.5))))^(1/2)
+
+As shown in Figure 2 (p(x) vs x plot) and Figure 3 (p(X>x) vs x plot), MLE is less sensitive to the changing bin sizes.
+I have used Kolmogorov-Smirnov metric to adjust a good xmin.
+
+Discussion
+----------
+Judging from Figure 2, it appears to me that the Kolmogorov-Smirnov metric's choice for xmin is too large. It is discarding
+too many data points. It appears to me that xmin=50 should have been a better choice. However, xmin=50 creates large difference
+between the data and the model in the p(X>x) vs x plot. I've shown this in Figure 4
